@@ -21,6 +21,7 @@ function Game () {
   const [gameState, setGameState] = useState(Array(9).fill(0)); //Array(num).fill(num) cria um array com n posições e com valores iniciais de n
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [winner, setWinner] = useState(0);
+  const [winnerLine, setWinnerLine] = useState([])
 
   const handleClick = (pos) => {
     if(gameState[pos] === 0 && winner === 0){
@@ -34,14 +35,20 @@ function Game () {
     winnerTable.forEach((line) => {
       const values = line.map((pos) => gameState[pos]);
       const sum = values.reduce((acumulated, value) => acumulated+value);
-      if( Math.abs(sum) === 3) setWinner(sum/ 3);
+      if( Math.abs(sum) === 3) {
+        setWinner(sum/ 3);
+        setWinnerLine(line)
+      }
     })
   }
 
   const handleReset = () => {
     setGameState(Array(9).fill(0));
     setWinner(0)
+    setWinnerLine([])
   }
+
+  const verifyWinnerLine = (pos) => winnerLine.find((value) => value === pos) !== undefined;
 
   useEffect(() => {
     setCurrentPlayer(currentPlayer * -1);
@@ -57,6 +64,7 @@ function Game () {
               key={`game-option-pos-${position}`}//o map no react precisa de uma key unica nos componentes
               status={value}
               onClick={() => handleClick(position)}
+              isWinner={verifyWinnerLine(position)}
             />
           )
         }
