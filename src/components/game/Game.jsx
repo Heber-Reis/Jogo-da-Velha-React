@@ -21,7 +21,8 @@ function Game () {
   const [gameState, setGameState] = useState(Array(9).fill(0)); //Array(num).fill(num) cria um array com n posições e com valores iniciais de n
   const [currentPlayer, setCurrentPlayer] = useState(1);
   const [winner, setWinner] = useState(0);
-  const [winnerLine, setWinnerLine] = useState([])
+  const [winnerLine, setWinnerLine] = useState([]);
+  const [draw, setDraw] = useState(false);
 
   const handleClick = (pos) => {
     if(gameState[pos] === 0 && winner === 0){
@@ -37,15 +38,21 @@ function Game () {
       const sum = values.reduce((acumulated, value) => acumulated+value);
       if( Math.abs(sum) === 3) {
         setWinner(sum/ 3);
-        setWinnerLine(line)
+        setWinnerLine(line);
       }
     })
   }
 
   const handleReset = () => {
     setGameState(Array(9).fill(0));
-    setWinner(0)
-    setWinnerLine([])
+    setWinner(0);
+    setWinnerLine([]);
+    setDraw(false);
+  }
+
+  const verifyDraw = () => {
+    //if(gameState.filter((value) => value === 0).length === 0);
+    if(gameState.find((value) => value === 0) === undefined && winner === 0) setDraw(true);
   }
 
   const verifyWinnerLine = (pos) => winnerLine.find((value) => value === pos) !== undefined;
@@ -53,7 +60,12 @@ function Game () {
   useEffect(() => {
     setCurrentPlayer(currentPlayer * -1);
     verifyGame()
+    verifyDraw();
   },gameState);
+
+  useEffect(() => {
+    if(winner !== 0) setDraw(false)
+  },[winner])
 
   return(
     <div className={styles.gameContent}>
@@ -65,6 +77,7 @@ function Game () {
               status={value}
               onClick={() => handleClick(position)}
               isWinner={verifyWinnerLine(position)}
+              isDraw={draw}
             />
           )
         }
@@ -73,6 +86,7 @@ function Game () {
         currentPlayer={currentPlayer} 
         winner={winner}
         onReset = {handleReset}
+        isDraw={draw}
       />
     </div>
 
