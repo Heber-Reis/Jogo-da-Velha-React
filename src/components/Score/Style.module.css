@@ -1,0 +1,11 @@
+.Score{
+  display: flex;
+  gap: 30px;
+  margin-top: 20px;
+}
+
+.ScoreContent{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
